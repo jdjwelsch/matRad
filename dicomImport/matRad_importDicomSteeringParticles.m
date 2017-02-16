@@ -231,7 +231,7 @@ for i = 1:length(BeamSeqNames)
     for j = 1:stf(i).numOfRays
         stf(i).ray(j).rayPos      = stf(i).ray(j).rayPos_bev*rotMx_XY_rotated*rotMx_XZ_rotated;
         stf(i).ray(j).targetPoint = stf(i).ray(j).targetPoint_bev*rotMx_XY_rotated*rotMx_XZ_rotated;   
-        stf(i).ray(j).SSD         = NaN;
+        stf(i).ray(j).SSD{1}         = NaN;
     end
     
     % SSD
@@ -250,7 +250,7 @@ for i = 1:length(BeamSeqNames)
             end
             
             % calculate SSD
-            stf(i).ray(j).SSD = double(2 * stf(i).SAD * alpha(ixSSD));
+            stf(i).ray(j).SSD{1} = double(2 * stf(i).SAD * alpha(ixSSD));
             % book keeping & calculate focus index
             stf(i).numOfBixelsPerRay(j) = numel([stf(i).ray(j).energy]);
     end
@@ -260,7 +260,7 @@ for i = 1:length(BeamSeqNames)
         % loop over all energies
         numOfEnergy = length(stf(i).ray(j).energy);
         for k = 1:numOfEnergy
-            energyIndex = find(abs([machine.data(:).energy]-stf(i).ray(j).energy(k))<10^-3);
+            energyIndex = find(abs([machine.data(:).energy]-stf(i).ray(j).energy(k))<0.1);
             if ~isempty(energyIndex)
                 stf(i).ray(j).energy(k) = machine.data(energyIndex).energy;
             else
