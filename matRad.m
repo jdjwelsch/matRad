@@ -23,8 +23,8 @@ clc
 
 %load HEAD_AND_NECK
 %load TG119.mat
-%load PROSTATE.mat
-load LIVER.mat
+load PROSTATE.mat
+%load LIVER.mat
 %load BOXPHANTOM.mat
 
 
@@ -33,14 +33,14 @@ multScen.numOfCtScen          = ct.numOfCtScen; % number of imported ct scenario
 
 multScen.numOfIntSegShiftScen = 0; %1000;              % number of internal segmentation shift scnearios     
 
-multScen.numOfShiftScen       = [2 2 0];        % number of shifts in x y and z direction       
+multScen.numOfShiftScen       = [0 0 0];        % number of shifts in x y and z direction       
 multScen.shiftSize            = [5 5 5];        % maximum shift [mm]
 multScen.shiftSD              = [3 3 3];        % SD of normal distribution [mm]
 multScen.shiftGenType         = 'equidistant';  % equidistant: equidistant shifts, sampled: sample shifts from normal distribution
 multScen.shiftCombType        = 'individual';   % individual: no combination of shift scenarios, combined: combine shift scenarios, allcombined: create every possible shift combination
 multScen.shiftGen1DIsotropy   = '+-';           % for equidistant shifts: '+-': positive and negative, '-': negative, '+': positive shift generation 
 
-multScen.numOfRangeShiftScen  = 2;              % number of absolute and/or relative range scnearios
+multScen.numOfRangeShiftScen  = 0;              % number of absolute and/or relative range scnearios
 multScen.maxAbsRangeShift     = 5;              % maximum absolute over and undershoot in mm
 multScen.maxRelRangeShift     = 0;              % maximum relative over and undershoot in %
 multScen.ScenCombType         = 'individual';   % individual: no combination of scenarios, allcombined: combine all scenarios
@@ -55,18 +55,19 @@ cst = matRad_coverageBasedCstManipulation(cst,ct,multScen,0,0);
 %% meta information for treatment plan
 pln.isoCenter       = matRad_getIsoCenter(cst,ct,0);
 pln.bixelWidth      = 5; % [mm] / also corresponds to lateral spot spacing for particles
-pln.gantryAngles    = [0 90]; %[0:72:359]; % [°]
-pln.couchAngles     = [0 0 ]; % [Â°]
+pln.gantryAngles    = [90 270]; %[0:72:359]; % [°]
+pln.couchAngles     = [0 0]; % [Â°]
 pln.numOfBeams      = numel(pln.gantryAngles);
 pln.numOfVoxels     = prod(ct.cubeDim);
 pln.voxelDimensions = ct.cubeDim;
 pln.radiationMode   = 'protons';     % either photons / protons / carbon
-pln.bioOptimization = 'none';        % none: physical optimization;             const_RBExD; constant RBE of 1.1;
+pln.bioOptimization = 'const_RBExD';        % none: physical optimization;             const_RBExD; constant RBE of 1.1;
                                      % LEMIV_effect: effect-based optimization; LEMIV_RBExD: optimization of RBE-weighted dose
 pln.numOfFractions  = 30;
+pln.SFUD            = false; % 1/true: use SFUD optimization, 0/false: don't
 pln.runSequencing   = false; % 1/true: run sequencing, 0/false: don't / will be ignored for particles and also triggered by runDAO below
 pln.runDAO          = false; % 1/true: run DAO, 0/false: don't / will be ignored for particles
-pln.machine         = 'HIT';
+pln.machine         = 'Generic';  % 'HIT'
 pln.minNrParticles  = 500000;
 pln.LongitudialSpotSpacing = 3; %only relevant for HIT machine, not generic
 %% initial visualization and change objective function settings if desired
@@ -84,7 +85,11 @@ elseif strcmp(pln.radiationMode,'protons') || strcmp(pln.radiationMode,'carbon')
 end
 
 %% inverse planning for imrt
-resultGUI = matRad_fluenceOptimization(dij,cst,pln);
+if ~pln.SFUD
+    resultGUI = matRad_fluenceOptimization(dij,cst,pln);
+else
+    resultGUI = SFUD_optimization(dij, cst, pln);
+end
 
 %% sequencing
 if strcmp(pln.radiationMode,'photons') && (pln.runSequencing || pln.runDAO)
@@ -98,6 +103,8 @@ if strcmp(pln.radiationMode,'photons') && pln.runDAO
    resultGUI = matRad_directApertureOptimization(dij,cst,resultGUI.apertureInfo,resultGUI,pln);
    matRad_visApertureInfo(resultGUI.apertureInfo);
 end
+%% sb view
+    resultGUI = sbView(pln, dij, cst, resultGUI, 1);
 
 %% start gui for visualization of result
 matRadGUI
