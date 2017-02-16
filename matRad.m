@@ -88,7 +88,7 @@ end
 if ~pln.SFUD
     resultGUI = matRad_fluenceOptimization(dij,cst,pln);
 else
-    resultGUI = SFUD_optimization(dij, cst, pln);
+    resultGUI = matRad_SFUDoptimization(dij, cst, pln);
 end
 
 %% sequencing
@@ -104,7 +104,7 @@ if strcmp(pln.radiationMode,'photons') && pln.runDAO
    matRad_visApertureInfo(resultGUI.apertureInfo);
 end
 %% sb view
-    resultGUI = sbView(pln, dij, cst, resultGUI, 1);
+resultGUI = matRad_singleBeamView(pln, dij, cst, resultGUI,'all');
 
 %% start gui for visualization of result
 matRadGUI
