@@ -19,13 +19,13 @@ function matRad_compareDose(ct,stf,pln,cst,multScen,resultGUI,recalc_resultGUI)
 % output 
 %    plots with slices through result cube, results of gamma Test,
 %    dhvs for both distributions    
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
 if nargin<7
     % recalculate Dose if recalculation not provided
     recalc_resultGUI = matRad_calcDoseDirect(ct,stf,pln,cst,resultGUI.w,multScen);
 end
-
+%% set start parameters
 % consider biological effect comparison
 if strcmp(pln.bioOptimization, 'RBExDose')
     result = resultGUI.RBExDose;
@@ -35,6 +35,10 @@ elseif strcmp(pln.bioOptimization, 'LEMIV_effect')
     result = resultGUI.effect;
     recalc_result = recalc_resultGUI.effect;
     optimizationQuantity = 'effect';
+elseif strcmp(pln.bioOptimization, 'LEMIV_RBExDose')
+    result = resultGUI.RBExDose;
+    recalc_result = recalc_resultGUI.RBExDose;
+    optimizationQuantity = 'RBExDose';
 else    
     result = resultGUI.physicalDose;
     recalc_result = recalc_resultGUI.physicalDose;

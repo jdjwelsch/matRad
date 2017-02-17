@@ -28,7 +28,7 @@ for i=1:size(sb_cst,1)
         if isfield(dij,'mAlphaDose') && isfield(dij,'mSqrtBetaDose')
             ab = sb_cst{i,5}.alphaX / sb_cst{i,5}.betaX;
             sb_cst{i,6}(j).dose = -0.5*ab +sqrt( 0.25*ab^2 + ...
-                sb_cst{i,6}(j).dose/pln.numOfBeams +(sb_cst{i,6}(j).dose + ab));
+                sb_cst{i,6}(j).dose/pln.numOfBeams *(sb_cst{i,6}(j).dose + ab));
         % physical dose splitting
         else
             sb_cst{i,6}(j).dose = sb_cst{i,6}(j).dose/pln.numOfBeams;

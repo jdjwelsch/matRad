@@ -86,7 +86,8 @@ else
 end
 
 doseTmpContainer = cell(numOfBixelsContainer,multScen.numOfCtScen,multScen.numOfShiftScen,multScen.numOfRangeShiftScen);
-if isequal(pln.bioOptimization,'effect') || isequal(pln.bioOptimization,'RBExD')
+if (isequal(pln.bioOptimization,'LEMIV_effect') || isequal(pln.bioOptimization,'LEMIV_RBExD')) ... 
+        && strcmp(pln.radiationMode,'carbon')
     alphaDoseTmpContainer = cell(numOfBixelsContainer,multScen.numOfCtScen,multScen.numOfShiftScen,multScen.numOfRangeShiftScen);
     betaDoseTmpContainer  = cell(numOfBixelsContainer,multScen.numOfCtScen,multScen.numOfShiftScen,multScen.numOfRangeShiftScen);
     for CtScen = 1:multScen.numOfCtScen
