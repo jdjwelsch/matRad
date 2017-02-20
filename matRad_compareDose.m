@@ -100,29 +100,44 @@ title('slice through xiso, yiso');
 legend('Syngo Dose', 'matRad Dose')
 hold off
 
-% plot difference in z=ziso plane
-resdiff = abs(result-recalc_result);
-subplot(2, 3, 4)
+% plot optimization Quantity in z=ziso plane
+ax1 = subplot(2, 3, 4);
 hold on
-title('absolute difference in xy-plane at z=ziso');
-imagesc(resdiff(:, :, ziso));
+title([optimizationQuantity ' in xy-plane at z=ziso (matRad)']);
+imagesc([0 ct.cubeDim(1)*resolution(1)], [0 ct.cubeDim(2)*resolution(2)], recalc_result(:,:,ziso));
+axis([0, ct.cubeDim(1)*resolution(1), 0, ct.cubeDim(2)*resolution(2)]);
 xlabel('x [mm]');
 ylabel('y [mm]');
-colormap('jet')
+colormap(ax1, 'parula');
+cb = colorbar;
+ylabel(cb, optimizationQuantity);
+hold off;
+
+% plot difference in z=ziso plane
+resdiff = abs(result-recalc_result);
+ax2 = subplot(2, 3, 5);
+hold on
+title('absolute difference in xy-plane at z=ziso');
+imagesc([0 ct.cubeDim(1)*resolution(1)], [0 ct.cubeDim(2)*resolution(2)],resdiff(:, :, ziso));
+axis([0, ct.cubeDim(1)*resolution(1), 0, ct.cubeDim(2)*resolution(2)]);
+xlabel('x [mm]');
+ylabel('y [mm]');
+colormap(ax2, 'parula');
 cb = colorbar;
 ylabel(cb, optimizationQuantity);
 hold off;
 
 % plot results gamma test
-subplot(2, 3, 5)
+subplot(2, 3, 6)
 hold on;
-imagesc(gammaCube(:,:,ziso),[0 2])
+imagesc([0 ct.cubeDim(1)*resolution(1)], [0 ct.cubeDim(2)*resolution(2)], gammaCube(:,:,ziso),[0 2])
+axis([0, ct.cubeDim(1)*resolution(1), 0, ct.cubeDim(2)*resolution(2)]);
 xlabel('x [mm]');
 ylabel('y [mm]');
 colormap(myColormap);
-colorbar
-title(['gamma pass rate ' num2str(gammaPassRate,5)  ' %, gamma criterion (' ...
-    num2str(relDoseThreshold) '% / ' num2str(dist2AgreeMm) 'mm)']);
+colorbar;
+title(sprintf(['gamma val in xy-plane at z=ziso \n pass rate ' num2str(gammaPassRate,5)  ' %, gamma criterion (' ...
+    num2str(relDoseThreshold) '% / ' num2str(dist2AgreeMm) 'mm)']));
 hold off;
 
 % calculate and compare DVH for both distributions
