@@ -3,7 +3,7 @@ function sb_resultGUI = matRad_singleBeamView(pln, dij, cst, resultGUI, viewBeam
 %  plot single beam dose distributions
 
 % call
-%   sbView(dij, cst, resultGUI)
+%   resultGUI = matRad_singleBeamView(pln, dij, cst, resultGUI, viewBeamNum)
 %
 % input
 %   dij:         matRad dij struct
@@ -83,9 +83,8 @@ else
 
         sb_w = resultGUI.w(sb_col);
         sb_resultGUI = matRad_calcCubes(sb_w,sb_dij,sb_cst,1);
+        
         % keep full set of weights and for other beams
-        % TODO: change this to a more consistent way for single spot weight
-        % visualisation
         sb_resultGUI.w = resultGUI.w;
     end
 end

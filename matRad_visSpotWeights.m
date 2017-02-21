@@ -16,6 +16,18 @@ function matRad_visSpotWeights(stf,pln,dij,resultGUI)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%
+
+
+counter = 0;
+for i = 1:size(stf,2)
+    for j = 1:stf(i).numOfRays
+      for k = 1:stf(i).ray(j).numOfbIxelPerRay
+          counter = counter + 1;
+          
+    end
+end
+    
+    
     if  strcmp(pln.radiationMode, 'photons')
         fig = figure;
         % maximum weight
@@ -57,11 +69,12 @@ function matRad_visSpotWeights(stf,pln,dij,resultGUI)
        end 
     else
         % for protons and carbon Ions consider different energies as well
-
+        
         % maximum weight
         w_max = max(resultGUI.w);
         for i=1:pln.numOfBeams
-           
+           fprintf(['Calculate weights for Beam ' num2str(i) '...\n']);
+            
            rayPos_mat = vertcat(stf(i).ray(:).rayPos_bev);
            x_min = min(rayPos_mat(:, 1));
            z_min = min(rayPos_mat(:, 3));
