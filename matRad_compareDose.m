@@ -27,7 +27,7 @@ if nargin<7
 end
 %% set start parameters
 % consider biological effect comparison
-if strcmp(pln.bioOptimization, 'RBExDose')
+if strcmp(pln.bioOptimization, 'const_RBExD')
     result = resultGUI.RBExDose;
     recalc_result = recalc_resultGUI.RBExDose;
     optimizationQuantity = 'RBExDose [Gy]';
@@ -35,7 +35,7 @@ elseif strcmp(pln.bioOptimization, 'LEMIV_effect')
     result = resultGUI.effect;
     recalc_result = recalc_resultGUI.effect;
     optimizationQuantity = 'effect';
-elseif strcmp(pln.bioOptimization, 'LEMIV_RBExDose')
+elseif strcmp(pln.bioOptimization, 'LEMIV_RBExD')
     result = resultGUI.RBExDose;
     recalc_result = recalc_resultGUI.RBExDose;
     optimizationQuantity = 'RBExDose';
@@ -104,7 +104,7 @@ hold off
 ax1 = subplot(2, 3, 4);
 hold on
 title([optimizationQuantity ' in xy-plane at z=ziso (matRad)']);
-imagesc([0 ct.cubeDim(1)*resolution(1)], [0 ct.cubeDim(2)*resolution(2)], recalc_result(:,:,ziso));
+imagesc([0 ct.cubeDim(1)*resolution(1)], [ct.cubeDim(2)*resolution(2) 0], recalc_result(:,:,ziso));
 axis([0, ct.cubeDim(1)*resolution(1), 0, ct.cubeDim(2)*resolution(2)]);
 xlabel('x [mm]');
 ylabel('y [mm]');
@@ -114,11 +114,11 @@ ylabel(cb, optimizationQuantity);
 hold off;
 
 % plot difference in z=ziso plane
-resdiff = abs(result-recalc_result);
+resdiff = (result-recalc_result);
 ax2 = subplot(2, 3, 5);
 hold on
-title('absolute difference in xy-plane at z=ziso');
-imagesc([0 ct.cubeDim(1)*resolution(1)], [0 ct.cubeDim(2)*resolution(2)],resdiff(:, :, ziso));
+title('difference in xy-plane at z=ziso (syngo-matRad)');
+imagesc([0 ct.cubeDim(1)*resolution(1)], [ct.cubeDim(2)*resolution(2) 0],resdiff(:, :, ziso));
 axis([0, ct.cubeDim(1)*resolution(1), 0, ct.cubeDim(2)*resolution(2)]);
 xlabel('x [mm]');
 ylabel('y [mm]');
@@ -130,7 +130,7 @@ hold off;
 % plot results gamma test
 subplot(2, 3, 6)
 hold on;
-imagesc([0 ct.cubeDim(1)*resolution(1)], [0 ct.cubeDim(2)*resolution(2)], gammaCube(:,:,ziso),[0 2])
+imagesc([0 ct.cubeDim(1)*resolution(1)], [ct.cubeDim(2)*resolution(2) 0], gammaCube(:,:,ziso),[0 2])
 axis([0, ct.cubeDim(1)*resolution(1), 0, ct.cubeDim(2)*resolution(2)]);
 xlabel('x [mm]');
 ylabel('y [mm]');
