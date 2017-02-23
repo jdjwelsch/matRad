@@ -186,6 +186,8 @@ else
     pln.bioOptimization = 'none';
 end
 
+wInit = wInit .* (1 + randn(dij.totalNumOfBixels,1)/50);
+
 % set optimization options
 options.radMod          = pln.radiationMode;
 options.bioOpt          = pln.bioOptimization;

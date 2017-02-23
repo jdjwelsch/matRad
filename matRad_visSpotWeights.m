@@ -93,18 +93,18 @@ end
            z_max = max(rayPos_mat(:, 3));
 
            % find all energies used
-           all_energies = unique(cat(2, stf(i).ray(:).energy));
-           numOfEnergies = length(all_energies);
+           all_energies{i} = unique(cat(2, stf(i).ray(:).energy));
+           numOfEnergies(i) = length(all_energies{i});
            
            % initialise weight matrix
-           weight_matrix{i} = zeros((x_max-x_min)/stf(i).bixelWidth,(z_max-z_min)/stf(i).bixelWidth, numOfEnergies);
+           weight_matrix{i} = zeros((x_max-x_min)/stf(i).bixelWidth,(z_max-z_min)/stf(i).bixelWidth, numOfEnergies(i));
            
            % find all bixel in this beam
            beam_ix = (bixelLut.beamNum == i);
            
-           for j=1:numOfEnergies
+           for j=1:numOfEnergies(i)
                % find all bixel with this energy
-               energy_ix = and((bixelLut.energy == all_energies(j)),beam_ix) ;
+               energy_ix = and((bixelLut.energy == all_energies{i}(j)),beam_ix) ;
                
                for k=1:stf(i).numOfRays
                    % find weights for this ray
@@ -132,7 +132,7 @@ end
            
            % plot spot weights
            img = imagesc( [x_min x_max], [z_min z_max], weight_matrix{i}(:,:,curr_ix_energy(i)));     
-           title(sprintf(['spotweights in beam ' num2str(i) ', energy: ' num2str(all_energies(curr_ix_energy(i)))]));
+           title(sprintf(['spotweights in beam ' num2str(i) ', energy: ' num2str(all_energies{i}(curr_ix_energy(i)))]));
            xlabel('x [mm]');
            ylabel('z [mm]');
            cmap = colormap(ax, 'jet');
@@ -160,12 +160,12 @@ end
       curr_ix_energy(curr_beam) = curr_ix_energy(curr_beam) - callbackdata.VerticalScrollCount;
       
       % project to allowed range
-      curr_ix_energy(curr_beam) = min(curr_ix_energy(curr_beam), numOfEnergies);
+      curr_ix_energy(curr_beam) = min(curr_ix_energy(curr_beam), numOfEnergies(curr_beam));
       curr_ix_energy(curr_beam) = max(curr_ix_energy(curr_beam), 1);
       
       % change Data in plot
       h.CData = weight_matrix{curr_beam}(:,:,curr_ix_energy(curr_beam));
-      title(sprintf(['spotweights in beam ' num2str(curr_beam) ', energy: ' num2str(all_energies(curr_ix_energy(curr_beam)))]));
+      title(sprintf(['spotweights in beam ' num2str(curr_beam) ', energy: ' num2str(all_energies{curr_beam}(curr_ix_energy(curr_beam)))]));
       drawnow;
       
     end
