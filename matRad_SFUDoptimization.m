@@ -1,5 +1,5 @@
 function [resultGUI] = matRad_SFUDoptimization(dij, cst, pln)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Calculation of single field uniform dose (SFUD) optimization
 
 % call
@@ -16,7 +16,7 @@ function [resultGUI] = matRad_SFUDoptimization(dij, cst, pln)
 %   (info:       struct containing information about optimization)
 %
 % References
-%   -
+%   [1]    https://ro-journal.biomedcentral.com/articles/10.1186/s13014-016-0705-8
 %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -27,8 +27,14 @@ for i=1:size(sb_cst,1)
         % biological dose splitting
         if isfield(dij,'mAlphaDose') && isfield(dij,'mSqrtBetaDose')
             ab = sb_cst{i,5}.alphaX / sb_cst{i,5}.betaX;
-            sb_cst{i,6}(j).dose = -0.5*ab +sqrt( 0.25*ab^2 + ...
-                sb_cst{i,6}(j).dose/pln.numOfBeams *(sb_cst{i,6}(j).dose + ab));
+            % dose per fraction
+            fx_dose = sb_cst{i,6}(j).dose / pln.numOfFractions;
+            % calculate dose per beam per fraction according to [1]
+            fx_dose = -0.5*ab +sqrt( 0.25*ab^2 + ...
+                fx_dose/pln.numOfBeams *(fx_dose + ab));
+            % calculate pseudo total Dose per Beam
+            sb_cst{i,6}(j).dose = fx_dose * pln.numOfFractions;
+            
         % physical dose splitting
         else
             sb_cst{i,6}(j).dose = sb_cst{i,6}(j).dose/pln.numOfBeams;
