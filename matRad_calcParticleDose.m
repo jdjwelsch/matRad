@@ -181,18 +181,21 @@ end
 
 for ShiftScen = 1:multScen.numOfShiftScen
 
-    % manipulate isocenter
-    pln.isoCenter    = pln.isoCenter + multScen.shifts(:,ShiftScen)';
-    for k = 1:length(stf)
-        stf(k).isoCenter = stf(k).isoCenter + multScen.shifts(:,ShiftScen)';
-    end
+    
+   
     
     fprintf(['shift scenario ' num2str(ShiftScen) ' of ' num2str(multScen.numOfShiftScen) ': \n']);
     fprintf('matRad: Particle dose calculation...\n');
     counter = 0;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     for i = 1:dij.numOfBeams % loop over all beams
-
+        % manipulate isocenter
+        pln.isoCenter(i,:) = pln.isoCenter(i,:) + multScen.shifts(:,ShiftScen)';
+        for k = 1:length(stf)
+        stf(k).isoCenter = stf(k).isoCenter + multScen.shifts(:,ShiftScen)';
+        end
+        
+        
         fprintf(['Beam ' num2str(i) ' of ' num2str(dij.numOfBeams) ': \n']);
 
         bixelsPerBeam = 0;

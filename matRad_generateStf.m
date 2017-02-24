@@ -127,7 +127,7 @@ for i = 1:length(pln.gantryAngles)
     stf(i).bixelWidth    = pln.bixelWidth;
     stf(i).radiationMode = pln.radiationMode;
     stf(i).SAD           = SAD;
-    stf(i).isoCenter     = pln.isoCenter;
+    stf(i).isoCenter     = pln.isoCenter(i,:);
     
     % gantry and couch roation matrices according to IEC 61217 standard
     % instead of moving the beam around the patient, we perform an inverse
