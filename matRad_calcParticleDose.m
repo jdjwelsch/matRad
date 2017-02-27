@@ -436,8 +436,8 @@ for ShiftScen = 1:multScen.numOfShiftScen
     end
 
     % manipulate isocenter
-    pln.isoCenter    = pln.isoCenter - multScen.shifts(:,ShiftScen)';
     for k = 1:length(stf)
+        pln.isoCenter(k,:)    = pln.isoCenter(k,:) - multScen.shifts(:,ShiftScen)';
         stf(k).isoCenter = stf(k).isoCenter - multScen.shifts(:,ShiftScen)';
     end 
 

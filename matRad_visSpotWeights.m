@@ -76,7 +76,7 @@ end
            hold off;
         end 
        
-    elseif (strcmp(stf(1).radiationMode, 'protons') || strcmp(stf(1).radiationMode, 'carbon'))
+    elseif ( strcmp(stf(1).radiationMode, 'protons') || strcmp(stf(1).radiationMode, 'carbon') )
         
         % for protons and carbon Ions consider different energies as well
         % maximum weight
@@ -132,7 +132,7 @@ end
            
            % plot spot weights
            img = imagesc( [x_min x_max], [z_min z_max], weight_matrix{i}(:,:,curr_ix_energy(i)));     
-           title(sprintf(['spotweights in beam ' num2str(i) ', energy: ' num2str(all_energies{i}(curr_ix_energy(i)))]));
+           title(sprintf(['spotweights in beam ' num2str(i) ', energy: ' num2str(all_energies{i}(curr_ix_energy(i)))] ));
            xlabel('x [mm]');
            ylabel('z [mm]');
            cmap = colormap(ax, 'jet');

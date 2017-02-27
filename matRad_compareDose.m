@@ -72,42 +72,56 @@ ziso = round(stf(1).isoCenter(3)/resolution(3));
 figure;
 subplot(2, 3, 1);
 hold on
-plot(xarray, result(:, yiso, ziso), ':r', 'LineWidth', 1.5);
-plot(xarray, recalc_result(:, yiso, ziso), 'b', 'LineWidth', 1.5);
+% plot(xarray, result(xiso, :, ziso), ':r', 'LineWidth', 1.5);
+% plot(xarray, recalc_result(xiso, :, ziso), 'b', 'LineWidth', 1.5);
+plot(xarray, result(ceil(end/2),:, ceil(end/2)), ':r', 'LineWidth', 1.5);
+plot(xarray, recalc_result(ceil(end/2),:, ceil(end/2)), 'b', 'LineWidth', 1.5);
 xlabel('x [mm]');
 ylabel(optimizationQuantity);
-title('slice through yiso, ziso');
+% title('slice through yiso, ziso');
+title('slice through y-mid, z-mid');
 legend('Syngo Dose', 'matRad Dose')
 hold off
 
 subplot(2, 3, 2);
 hold on
-plot(yarray, result(xiso, :, ziso), ':r', 'LineWidth', 1.5);
-plot(yarray, recalc_result(xiso, :, ziso), 'b', 'LineWidth', 1.5);
+
+% plot(yarray, result(:, yiso, ziso), ':r', 'LineWidth', 1.5);
+% plot(yarray, recalc_result(:, yiso, ziso), 'b', 'LineWidth', 1.5);
+plot(yarray, result(:, ceil(end/2), ceil(end/2)), ':r', 'LineWidth', 1.5);
+plot(yarray, recalc_result(:, ceil(end/2), ceil(end/2)), 'b', 'LineWidth', 1.5);
+
 xlabel('y [mm]');
 ylabel(optimizationQuantity);
-title('slice through xiso, ziso');
+% title('slice through xiso, ziso');
+title('slice through x-mid, z-mid');
 legend('Syngo Dose', 'matRad Dose')
 hold off
 
 subplot(2, 3, 3);
 hold on
-plot(zarray, squeeze(result(xiso, yiso, :)), ':r', 'LineWidth', 1.5);
-plot(zarray, squeeze(recalc_result(xiso, yiso, :)), 'b', 'LineWidth', 1.5);
+% plot(zarray, squeeze(result(xiso, yiso, :)), ':r', 'LineWidth', 1.5);
+% plot(zarray, squeeze(recalc_result(xiso, yiso, :)), 'b', 'LineWidth', 1.5);
+plot(zarray, squeeze(result(ceil(end/2), ceil(end/2), :)), ':r', 'LineWidth', 1.5);
+plot(zarray, squeeze(recalc_result(ceil(end/2), ceil(end/2), :)), 'b', 'LineWidth', 1.5);
 xlabel('z [mm]');
 ylabel(optimizationQuantity);
-title('slice through xiso, yiso');
+% title('slice through xiso, yiso');
+title('slice through x-mid, y-mid');
 legend('Syngo Dose', 'matRad Dose')
 hold off
 
 % plot optimization Quantity in z=ziso plane
 ax1 = subplot(2, 3, 4);
 hold on
-title([optimizationQuantity ' in xy-plane at z=ziso (matRad)']);
-imagesc([0 ct.cubeDim(1)*resolution(1)], [ct.cubeDim(2)*resolution(2) 0], recalc_result(:,:,ziso));
+% title([optimizationQuantity ' in xy-plane at z=ziso (matRad)']);
+title([optimizationQuantity ' in xy-plane at z=z-mid (matRad)']);
+% imagesc([0 ct.cubeDim(1)*resolution(1)], [ct.cubeDim(2)*resolution(2) 0], recalc_result(:,:,ziso));
+imagesc([0 ct.cubeDim(1)*resolution(1)], [ 0 ct.cubeDim(2)*resolution(2)], recalc_result(:,:,ceil(end/2)));
 axis([0, ct.cubeDim(1)*resolution(1), 0, ct.cubeDim(2)*resolution(2)]);
 xlabel('x [mm]');
 ylabel('y [mm]');
+set(gca,'YDir','reverse');
 colormap(ax1, 'parula');
 cb = colorbar;
 ylabel(cb, optimizationQuantity);
@@ -117,12 +131,14 @@ hold off;
 resdiff = (result-recalc_result);
 ax2 = subplot(2, 3, 5);
 hold on
-title('difference in xy-plane at z=ziso (syngo-matRad)');
-imagesc([0 ct.cubeDim(1)*resolution(1)], [ct.cubeDim(2)*resolution(2) 0],resdiff(:, :, ziso));
+% title('difference in xy-plane at z=ziso (syngo-matRad)');
+title('difference in xy-plane at z=z-mid (syngo-matRad)');
+imagesc([0 ct.cubeDim(1)*resolution(1)], [0 ct.cubeDim(2)*resolution(2)],resdiff(:, :, ceil(end/2)));
 axis([0, ct.cubeDim(1)*resolution(1), 0, ct.cubeDim(2)*resolution(2)]);
 xlabel('x [mm]');
 ylabel('y [mm]');
 colormap(ax2, 'parula');
+set(gca,'YDir','reverse');
 cb = colorbar;
 ylabel(cb, optimizationQuantity);
 hold off;
@@ -130,13 +146,15 @@ hold off;
 % plot results gamma test
 subplot(2, 3, 6)
 hold on;
-imagesc([0 ct.cubeDim(1)*resolution(1)], [ct.cubeDim(2)*resolution(2) 0], gammaCube(:,:,ziso),[0 2])
+% imagesc([0 ct.cubeDim(1)*resolution(1)], [ct.cubeDim(2)*resolution(2) 0], gammaCube(:,:,ziso),[0 2])
+imagesc([0 ct.cubeDim(1)*resolution(1)], [0 ct.cubeDim(2)*resolution(2)], gammaCube(:,:,ceil(end/2)),[0 2])
 axis([0, ct.cubeDim(1)*resolution(1), 0, ct.cubeDim(2)*resolution(2)]);
 xlabel('x [mm]');
 ylabel('y [mm]');
 colormap(myColormap);
+set(gca,'YDir','reverse');
 colorbar;
-title(sprintf(['gamma val in xy-plane at z=ziso \n pass rate ' num2str(gammaPassRate,5)  ' %, gamma criterion (' ...
+title(sprintf(['gamma val in xy-plane at z=z-mid \n pass rate ' num2str(gammaPassRate,5)  ' %, gamma criterion (' ...
     num2str(relDoseThreshold) '% / ' num2str(dist2AgreeMm) 'mm)']));
 hold off;
 
