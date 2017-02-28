@@ -32,8 +32,6 @@ function f = matRad_objFuncWrapper(w,dij,cst,options)
 %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-global fScaling
-
 % get current dose / effect / RBExDose vector
 d = matRad_backProjection(w,dij,options);
 
@@ -146,5 +144,3 @@ for  i = 1:size(cst,1)
     
 end
 
-% apply objective scaling
-f = fScaling*f;

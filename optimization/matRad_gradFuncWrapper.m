@@ -35,8 +35,6 @@ function g = matRad_gradFuncWrapper(w,dij,cst,options)
 %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-global fScaling
-
 % get current dose / effect / RBExDose vector
 d = matRad_backProjection(w,dij,options);
 
@@ -157,8 +155,7 @@ for  i = 1:size(cst,1)
     end
     
 end
-
-  
+ 
 % Calculate gradient
 g = zeros(dij.totalNumOfBixels,1);
 
@@ -195,11 +192,3 @@ for i = 1:options.numOfScenarios
     end
 end
 
-% apply objective scaling
-g = fScaling.*g;
-
-% save min/max gradient
-global matRad_iteration
-global GRADIENT
-GRADIENT(1,1,matRad_iteration+1)= max(abs(g));
-GRADIENT(1,2,matRad_iteration+1)= min(abs(g));

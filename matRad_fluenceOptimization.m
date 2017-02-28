@@ -62,26 +62,12 @@ global matRad_global_d;
 global matRad_STRG_C_Pressed;
 global matRad_objective_function_value;
 global matRad_iteration;
-global kDVH;
-global kDCH;
-global JACOBIAN;
-global GRADIENT;
-global CONSTRAINT
-global fScaling;
-global cScaling;
 
 matRad_global_x                 = NaN * ones(dij.totalNumOfBixels,1);
 matRad_global_d                 = NaN * ones(dij.numOfVoxels,1);
 matRad_STRG_C_Pressed           = false;
 matRad_objective_function_value = [];
 matRad_iteration                = 0;
-kDVH                            = [];
-kDCH                            = [];
-JACOBIAN                        = [];
-GRADIENT                        = [];
-CONSTRAINT                      = [];
-fScaling                        = 1;
-cScaling                        = 1;
 
 % consider VOI priorities
 cst  = matRad_setOverlapPriorities(cst);
@@ -195,36 +181,12 @@ options.ID              = [pln.radiationMode '_' pln.bioOptimization];
 options.numOfScenarios  = dij.numOfScenarios;
 
 % set callback functions.
-
- 
 funcs.objective         = @(x) matRad_objFuncWrapper(x,dij,cst,options);
 funcs.constraints       = @(x) matRad_constFuncWrapper(x,dij,cst,options);
 funcs.gradient          = @(x) matRad_gradFuncWrapper(x,dij,cst,options);
 funcs.jacobian          = @(x) matRad_jacobFuncWrapper(x,dij,cst,options);
 funcs.jacobianstructure = @( ) matRad_getJacobStruct(dij,cst);
 
-% scale objective and constraint function
-gInit    = abs(matRad_gradFuncWrapper(wInit,dij,cst,options));
-fScaling = 1e2/max(gInit);
-
-
-if ~isempty(matRad_getConstBoundsWrapper(cst,options))
-
-    jInit    = abs(matRad_jacobFuncWrapper(wInit,dij,cst,options));
-        
-    for i = 1:length(matRad_getConstBoundsWrapper(cst,options))  
-        
-        wInitTmp = wInit;
-        while sum(jInit(i,:)) == 0
-            wInitTmp = wInitTmp - 0.1*wInit;
-            jInit = abs(matRad_jacobFuncWrapper(wInitTmp,dij,cst,options));
-        end
-        cScalingTmp(i,1) = 1e-3/max(jInit(i,:));
-    end
-    cScaling = cScalingTmp;
-end
-
-options.ipopt.acceptable_constr_viol_tol = max(cScaling)*options.ipopt.acceptable_constr_viol_tol;
 [options.cl,options.cu] = matRad_getConstBoundsWrapper(cst,options);  
 
 %check which scenarios should be considered during optimization
@@ -273,13 +235,6 @@ resultGUI.optInfo.globalVar.matRad_global_d                 = matRad_global_d;
 resultGUI.optInfo.globalVar.matRad_STRG_C_Pressed           = matRad_STRG_C_Pressed;
 resultGUI.optInfo.globalVar.matRad_objective_function_value = matRad_objective_function_value;
 resultGUI.optInfo.globalVar.matRad_iteration                = matRad_iteration;
-resultGUI.optInfo.globalVar.kDVH                            = kDVH;
-resultGUI.optInfo.globalVar.kDCH                            = kDCH;
-resultGUI.optInfo.globalVar.JACOBIAN                        = JACOBIAN;
-resultGUI.optInfo.globalVar.GRADIENT                        = GRADIENT;
-resultGUI.optInfo.globalVar.CONSTRAINT                      = CONSTRAINT;
-resultGUI.optInfo.globalVar.fScaling                        = fScaling;
-resultGUI.optInfo.globalVar.cScaling                        = cScaling;
 
 % unset Key Pressed Callback of Matlab command window
 if ~isdeployed
@@ -288,7 +243,6 @@ end
 
 % clear global variables
 clearvars -global matRad_global_x matRad_global_d matRad_objective_function_value matRad_STRG_C_Pressed matRad_iteration;
-clearvars -global kDVH kDCH GRADIENT JACOBIAN fScaling cScaling CONSTRAINT
 
 % unblock mex files
 clear mex
