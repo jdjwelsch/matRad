@@ -71,9 +71,11 @@ ziso = round(stf(1).isoCenter(3)/resolution(3));
 
 
 
-isoslice = true; % plot slices at Isocenter of beam 1 otherwise middle of respective arrays is used
+isoslice = false; % plot slices at Isocenter of beam 1 otherwise middle of respective arrays is used
 
 figure;
+grid;
+grid minor;
 subplot(2, 3, 1);
 hold on
 if isoslice
@@ -147,10 +149,10 @@ resdiff = (result-recalc_result);
 ax2 = subplot(2, 3, 5);
 hold on
 if isoslice
-    title({'difference in xy-plane at z=z-iso ' ; ' (syngo-matRad)'});
+    title(sprintf(['difference in xy-plane at z=z-iso \n (syngo-matRad)']));
     imagesc([0 ct.cubeDim(1)*resolution(1)], [0 ct.cubeDim(2)*resolution(2)],resdiff(:, :, ziso));
 else
-    title({'difference in xy-plane at z=z-mid ' ; ' (syngo-matRad)'});
+    title(sprintf(['difference in xy-plane at z=z-mid \n (syngo-matRad)']));
     imagesc([0 ct.cubeDim(1)*resolution(1)], [0 ct.cubeDim(2)*resolution(2)],resdiff(:, :, ceil(end/2)));
 end
 axis([0, ct.cubeDim(1)*resolution(1), 0, ct.cubeDim(2)*resolution(2)]);

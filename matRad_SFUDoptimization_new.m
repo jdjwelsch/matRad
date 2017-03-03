@@ -3,10 +3,9 @@ function [resultGUI] = matRad_SFUDoptimization_new(ct,stf,pln,cst,multScen)
 %  Calculation of single field uniform dose (SFUD) optimization
 
 % call
-%   [resultGUI] = SFUD_optimization(dij, cst, pln)
+%   resultGUI = SFUD_optimization_new(ct,stf,pln,cst,multScen)
 %
 % input
-%   dij:        matRad dij struct
 %   cst:        matRad cst struct
 %   pln:        matRad pln struct
 %
