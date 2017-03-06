@@ -105,13 +105,6 @@ stf(length(BeamSeqNames)).numOfBixelsPerRay = [];
 stf(length(BeamSeqNames)).totalNumOfBixels = [];
 stf(length(BeamSeqNames)).ray = [];
 
-totalCumMetersetWeight = 0;
-for i = 1:length(BeamSeqNames)
-    currBeamSeq = BeamSeq.(BeamSeqNames{i});
-    totalCumMetersetWeight = totalCumMetersetWeight + ...
-                                currBeamSeq.FinalCumulativeMetersetWeight;
-end
-
 for i = 1:length(BeamSeqNames)
     currBeamSeq = BeamSeq.(BeamSeqNames{i});
     ControlPointSeq      = currBeamSeq.IonControlPointSequence;
@@ -145,8 +138,6 @@ for i = 1:length(BeamSeqNames)
     numOfContrPointSeq = length(ControlPointSeqNames);
     % create empty helper matrix
     StfTmp = zeros(0,5);
-    % find beam weight
-    beamWeight = currBeamSeq.FinalCumulativeMetersetWeight / totalCumMetersetWeight;
     for currContr = 1:numOfContrPointSeq
         currContrSeq = ControlPointSeq.(ControlPointSeqNames{currContr});
         % get energy, equal for all coming elements in the next loop
@@ -177,7 +168,7 @@ for i = 1:length(BeamSeqNames)
         k = ic(j);
         stf(i).ray(k).energy = [stf(i).ray(k).energy double(StfTmp(j,3))];
         stf(i).ray(k).focusFWHM = [stf(i).ray(k).focusFWHM double(StfTmp(j,5))];
-        stf(i).ray(k).weight = [stf(i).ray(k).weight double(StfTmp(j,4)) / 1e6*beamWeight];
+        stf(i).ray(k).weight = [stf(i).ray(k).weight double(StfTmp(j,4)) / 1e6];
     end
     
     
