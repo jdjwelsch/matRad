@@ -71,7 +71,7 @@ ziso = round(stf(1).isoCenter(3)/resolution(3));
 
 
 
-isoslice = false; % plot slices at Isocenter of beam 1 otherwise middle of respective arrays is used
+isoslice = true; % plot slices at Isocenter of beam 1 otherwise middle of respective arrays is used
 
 figure;
 grid;
