@@ -12,3 +12,10 @@ dicomImport/hlutLibrary/TOSHIBA-Aquilion-ConvolutionKernel-FC13_carbon.hlut
 dicomImport/hlutLibrary/TOSHIBA-Aquilion-ConvolutionKernel-FC48_carbon.hlut
 matRad_gammaIndex.m
 protons_HIT.mat
+carbon_HITOLD.mat
+carbon_HITfixedBL.mat
+carbon_HITgantry.mat
+protons_HITfixedBL.mat
+protons_HITfixedBLOLD.mat
+protons_HITgantry.mat
+protons_HITgantryOLD.mat
