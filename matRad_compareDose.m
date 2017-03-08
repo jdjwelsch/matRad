@@ -69,10 +69,13 @@ xiso = round(stf(1).isoCenter(1)/resolution(1));
 yiso = round(stf(1).isoCenter(2)/resolution(2));
 ziso = round(stf(1).isoCenter(3)/resolution(3));
 
-
-
-isoslice = true; % plot slices at Isocenter of beam 1 otherwise middle of respective arrays is used
-
+%  plot slices at Isocenter if the first two beams have the same isocenter,
+%  otherwise take the middle of the x, y and z arrays
+if pln.isoCenter(1,:) == pln.isoCenter(2,:)
+    isoslice = true; 
+else
+    isoslice = false;
+end
 figure;
 grid;
 grid minor;
