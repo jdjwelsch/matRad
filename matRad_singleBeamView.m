@@ -1,14 +1,16 @@
-function sb_resultGUI = matRad_singleBeamView(pln, dij, cst, resultGUI, viewBeamNum)
+function sb_resultGUI = matRad_singleBeamView(pln, dij, cst, weights, viewBeamNum)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  plot single beam dose distributions
-
+%  calculate single beam dose distributions
+%  
+%
 % call
 %   resultGUI = matRad_singleBeamView(pln, dij, cst, resultGUI, viewBeamNum)
 %
 % input
+%   pln:         matRad pln struct
 %   dij:         matRad dij struct
 %   cst:         matRad cst struct
-%   resultGUI:   matRad resultGUI struct
+%   weights:     weights for beam spots (matRad resultGUI.w)
 %   viewBeamNum: beam to be visualised, either integer for beamNum or 'all'
 %                to calculate total dose
 %
@@ -22,10 +24,10 @@ function sb_resultGUI = matRad_singleBeamView(pln, dij, cst, resultGUI, viewBeam
 if strcmp(viewBeamNum, 'all')
     % recalculate standard resultGUI for all beams
     fprintf('Calculating total dose \n');
-    sb_resultGUI = matRad_calcCubes(resultGUI.w,dij,cst,1);
+    sb_resultGUI = matRad_calcCubes(weights,dij,cst,1);
 
 elseif ~isnumeric(viewBeamNum)
-    fprintf('Error: wrong beam number format in sbView \n');
+    error('wrong beam number format in matRad_singleBeamView \n');
 
 else
     % calculate single beam dose
@@ -81,11 +83,11 @@ else
         sb_pln.gantryAngles = pln.gantryAngles(i);
         sb_pln.couchAngles = pln.couchAngles(i);
 
-        sb_w = resultGUI.w(sb_col);
+        sb_w = weights(sb_col);
         sb_resultGUI = matRad_calcCubes(sb_w,sb_dij,sb_cst,1);
         
         % keep full set of weights and for other beams
-        sb_resultGUI.w = resultGUI.w;
+        sb_resultGUI.w = weights;
     end
 end
-end
+end % eof

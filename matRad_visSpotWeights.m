@@ -35,7 +35,8 @@ end
         
         % plot weights for all beams in one figure
         figure;
-        
+        rowNum = floor(sqrt(numOfBeams)); % number of rows in subplot
+        colNum = ceil(numOfBeams/rowNum); % numberof columns in subplot
         % maximum weight
         w_max = max(weights);
         
@@ -56,7 +57,7 @@ end
                % find weight for this ray
                weight_ix = and((bixelLut.beamNum==i), (bixelLut.rayNum==j));
                % normalize weight
-               w_norm = sum(weights(weight_ix))/length(weight_ix)/w_max;
+               w_norm = weights(weight_ix)/w_max;
                % find position in matrix corresponding to ray
                xpos = (stf(i).ray(j).rayPos_bev(1) + abs(x_min))/stf(i).bixelWidth +1;
                zpos = (stf(i).ray(j).rayPos_bev(3) + abs(z_min))/stf(i).bixelWidth +1;
@@ -64,9 +65,10 @@ end
            end
 
            % plot weight matrix
-           ax = subplot(numOfBeams,1, i);
+           ax = subplot(rowNum,colNum, i);
            hold on;
-           imagesc( [x_min x_max], [z_min z_max], weight_matrix{i});     
+           imagesc( [x_min x_max], [z_min z_max], weight_matrix{i}); 
+           axis image;
            title(sprintf(['spotweights in beam ' num2str(i)]));
            xlabel('x [mm]');
            ylabel('z [mm]');
@@ -131,7 +133,8 @@ end
            curr_ix_energy(i) = 1; % current energy slice index
            
            % plot spot weights
-           img = imagesc( [x_min x_max], [z_min z_max], weight_matrix{i}(:,:,curr_ix_energy(i)));     
+           img = imagesc( [x_min x_max], [z_min z_max], weight_matrix{i}(:,:,curr_ix_energy(i)));
+           axis image;
            title(sprintf(['spotweights in beam ' num2str(i) ', energy: ' num2str(all_energies{i}(curr_ix_energy(i)))] ));
            xlabel('x [mm]');
            ylabel('z [mm]');

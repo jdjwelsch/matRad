@@ -8,7 +8,7 @@ function sb_resultGUI = matRad_singleBeamView_nodij(ct,stf,pln,cst,multScen,weig
 %
 % input
 %   cst:         matRad cst struct
-%   weights:     weights for beamspots (usually matRad resultGUI.w struct)
+%   weights:     weights for beamspots (usually matRad resultGUI.w)
 %   viewBeamNum: beam to be visualised, either integer for beamNum or 'all'
 %                to calculate total dose
 %
