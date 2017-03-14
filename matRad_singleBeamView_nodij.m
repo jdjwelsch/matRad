@@ -1,4 +1,4 @@
-function sb_resultGUI = matRad_singleBeamView_nodij(ct,stf,pln,cst,multScen,weights,viewBeamNum)
+function sb_resultGUI = matRad_singleBeamView_nodij(pln,cst,weights,viewBeamNum,ct,stf,multScen)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  calculate single beam dose distributions without a dij struct being
 %  present
