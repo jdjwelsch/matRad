@@ -239,7 +239,7 @@ for ShiftScen = 1:multScen.numOfShiftScen
 
         % Determine lateral cutoff
         fprintf('matRad: calculate lateral cutoff...');
-        cutOffLevel = .999;
+        cutOffLevel = .99;
         visBoolLateralCutOff = 0;
         machine = matRad_calcLateralParticleCutOff(machine,cutOffLevel,stf(i),visBoolLateralCutOff);
         fprintf('done.\n');    

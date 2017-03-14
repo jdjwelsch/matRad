@@ -60,14 +60,14 @@ pln.couchAngles     = [0 180]; % [°]
 pln.numOfBeams      = numel(pln.gantryAngles);
 pln.numOfVoxels     = prod(ct.cubeDim);
 pln.voxelDimensions = ct.cubeDim;
-pln.radiationMode   = 'carbon';     % either photons / protons / carbon
-pln.bioOptimization = 'LEMIV_RBExD';        % none: physical optimization;             const_RBExD; constant RBE of 1.1;
+pln.radiationMode   = 'photons';     % either photons / protons / carbon
+pln.bioOptimization = 'none';        % none: physical optimization;             const_RBExD; constant RBE of 1.1;
                                      % LEMIV_effect: effect-based optimization; LEMIV_RBExD: optimization of RBE-weighted dose
 pln.numOfFractions  = 30;
 pln.SFUD            = true; % 1/true: use SFUD optimization, 0/false: don't
 pln.runSequencing   = false; % 1/true: run sequencing, 0/false: don't / will be ignored for particles and also triggered by runDAO below
 pln.runDAO          = false; % 1/true: run DAO, 0/false: don't / will be ignored for particles
-pln.machine         = 'HIT';  % 'HIT' 'generic'
+pln.machine         = 'generic';  % 'HIT' 'generic'
 pln.minNrParticles  = 500000;
 pln.LongitudialSpotSpacing = 3; %only relevant for HIT machine, not generic
 %% initial visualization and change objective function settings if desired
