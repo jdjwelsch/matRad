@@ -1,14 +1,23 @@
-function [resultGUI] = matRad_SFUDoptimization(dij, cst, pln)
+function [resultGUI] = matRad_SFUDoptimization(pln, cst, dij, ct, stf, multScen)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Calculation of single field uniform dose (SFUD) optimization
-
+%   If provided the dij matrix is used for optimisation, otherwise single
+%   beam dijs are calculated (memory saving)
 % call
-%   [resultGUI] = SFUD_optimization(dij, cst, pln)
+%   [resultGUI] = SFUD_optimization(pln, cst, dij)
+%   or
+%   [resultGUI] = SFUD_optimization(pln, cst, [], ct, stf, multScen)
+%
 %
 % input
-%   dij:        matRad dij struct
-%   cst:        matRad cst struct
-%   pln:        matRad pln struct
+%   pln:         matRad pln struct
+%   cst:         matRad cst struct
+%   dij:         matRad dij struct (optional)
+%                  
+%   ct:          matRad ct struct (optional, only needed if no dij provided)
+%   stf:         matRad stf struct (optional, only if needed no dij provided)
+%   multScen:    matRad multScen struct (optional, only needed if no dij
+%                provided
 %
 % output
 %   resultGUI:  struct containing optimized fluence vector, dose, and (for
@@ -42,53 +51,90 @@ for i=1:size(sb_cst,1)
     end
 end
 
+if ~isempty(dij)
+    % calculate dij with total dij being present
+        
+    % initialise total weight vector
+    wTot = zeros(dij.totalNumOfBixels,1);
 
-% initialise total weight vector
-wTot = zeros(dij.totalNumOfBixels,1);
+    for i = 1:pln.numOfBeams
+        % columns in total dij for single beam
+        sb_col = find(dij.beamNum == i);
+        % construct dij for single beam
+        sb_dij.numOfBeams = 1;
+        sb_dij.numOfVoxels = dij.numOfVoxels;
+        sb_dij.resolution = dij.resolution;
+        sb_dij.numOfRaysPerBeam = dij.numOfRaysPerBeam(i);
+        sb_dij.totalNumOfRays = sb_dij.numOfRaysPerBeam;
+        sb_dij.totalNumOfBixels = size(sb_col, 1);
+        sb_dij.dimensions = dij.dimensions;
+        sb_dij.numOfScenarios = dij.numOfScenarios;
+        sb_dij.ScenProb = dij.ScenProb;
+        sb_dij.bixelNum = dij.bixelNum(sb_col);
+        sb_dij.rayNum = dij.rayNum(sb_col);
+        sb_dij.beamNum = dij.beamNum(sb_col);
+        sb_dij.physicalDose{1} = dij.physicalDose{1}(:, sb_col);
+        sb_dij.indexforOpt = dij.indexforOpt;
+        if isfield(dij, 'RBE')
+            sb_dij.RBE = dij.RBE;
+        end
+        if isfield(dij, 'mLETDose')
+            sb_dij.mLETDose = dij.mLETDose(:, sb_col);
+        end
+        if isfield(dij,'mAlphaDose') && isfield(dij,'mSqrtBetaDose')
+            sb_dij.mAlphaDose{1} = dij.mAlphaDose{1}(:, sb_col);
+            sb_dij.mSqrtBetaDose{1} = dij.mSqrtBetaDose{1}(:, sb_col);
+        end
 
-for i = 1:pln.numOfBeams
-    % columns in total dij for single beam
-    sb_col = find(dij.beamNum == i);
-    % construct dij for single beam
-    sb_dij.numOfBeams = 1;
-    sb_dij.numOfVoxels = dij.numOfVoxels;
-    sb_dij.resolution = dij.resolution;
-    sb_dij.numOfRaysPerBeam = dij.numOfRaysPerBeam(i);
-    sb_dij.totalNumOfRays = sb_dij.numOfRaysPerBeam;
-    sb_dij.totalNumOfBixels = size(sb_col, 1);
-    sb_dij.dimensions = dij.dimensions;
-    sb_dij.numOfScenarios = dij.numOfScenarios;
-    sb_dij.ScenProb = dij.ScenProb;
-    sb_dij.bixelNum = dij.bixelNum(sb_col);
-    sb_dij.rayNum = dij.rayNum(sb_col);
-    sb_dij.beamNum = dij.beamNum(sb_col);
-    sb_dij.physicalDose{1} = dij.physicalDose{1}(:, sb_col);
-    sb_dij.indexforOpt = dij.indexforOpt;
-    if isfield(dij, 'RBE')
-        sb_dij.RBE = dij.RBE;
+        % adjust pln to one beam only
+        sb_pln = pln;
+        sb_pln.gantryAngles = pln.gantryAngles(i);
+        sb_pln.couchAngles = pln.couchAngles(i);
+
+        % optimize single beam
+        sb_resultGUI = matRad_fluenceOptimization(sb_dij,sb_cst,sb_pln);    
+
+        % merge single beam weights into total weight vector
+        wTot(sb_col) = sb_resultGUI.w;
     end
-    if isfield(dij, 'mLETDose')
-        sb_dij.mLETDose = dij.mLETDose(:, sb_col);
-    end
-    if isfield(dij,'mAlphaDose') && isfield(dij,'mSqrtBetaDose')
-        sb_dij.mAlphaDose{1} = dij.mAlphaDose{1}(:, sb_col);
-        sb_dij.mSqrtBetaDose{1} = dij.mSqrtBetaDose{1}(:, sb_col);
-    end
+
+    % calculate dose
+    resultGUI = matRad_calcCubes(wTot,dij,cst,1);
+
+else
+    % calculate SFUD without total dij
     
-    % adjust pln to one beam only
-    sb_pln = pln;
-    sb_pln.gantryAngles = pln.gantryAngles(i);
-    sb_pln.couchAngles = pln.couchAngles(i);
-    
-    % optimize single beam
-    sb_resultGUI = matRad_fluenceOptimization(sb_dij,sb_cst,sb_pln);    
-   
-    % merge single beam weights into total weight vector
-    wTot(sb_col) = sb_resultGUI.w;
-end
+    % initialise total weight vector
+    wTot = [];
 
-% calculate dose
-resultGUI = matRad_calcCubes(wTot,dij,cst,1);
+    for i = 1:pln.numOfBeams
+        fprintf(['optimizing beam ' num2str(i) '...\n']);
+        % single beam stf
+        sb_stf = stf(i);
 
+        % adjust pln to one beam only
+        sb_pln = pln;
+        sb_pln.isoCenter = pln.isoCenter(i,:);
+        sb_pln.numOfBeams = 1;
+        sb_pln.gantryAngles = pln.gantryAngles(i);
+        sb_pln.couchAngles = pln.couchAngles(i);
+
+        % calculate single beam dij
+        sb_dij = matRad_calcParticleDose(ct,sb_stf,sb_pln,sb_cst,multScen,false);
+
+        % optimize single beam
+        sb_resultGUI = matRad_fluenceOptimization(sb_dij,sb_cst,sb_pln);    
+
+        % merge single beam weights into total weight vector
+        wTot = [wTot ; sb_resultGUI.w];
+
+    end
+
+    fprintf('Calculate total dose...');
+    % calculate dose
+    resultGUI = matRad_calcDoseDirect(ct,stf,pln,cst,wTot,multScen);
+    fprintf('done. \n');
 end
+        
+end %eof
 

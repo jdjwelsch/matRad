@@ -22,9 +22,9 @@ function sb_resultGUI = matRad_singleBeamView(pln, cst, weights, viewBeamNum, di
 %               
 %                if you provide these parameters dose will be calculated
 %                directly from spotweights:
-%   ct:          matRad ct struct (optional, only if no dij provided)
-%   stf:         matRad stf struct (optional, only if no dij provided)
-%   multScen:    matRad multScen struct (optional, only if no dij
+%   ct:          matRad ct struct (optional, only needed if no dij provided)
+%   stf:         matRad stf struct (optional, only needed if no dij provided)
+%   multScen:    matRad multScen struct (optional, only needed if no dij
 %                provided
 %
 % output
