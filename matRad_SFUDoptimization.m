@@ -4,9 +4,9 @@ function [resultGUI] = matRad_SFUDoptimization(pln, cst, dij, ct, stf, multScen)
 %   If provided the dij matrix is used for optimisation, otherwise single
 %   beam dijs are calculated (memory saving)
 % call
-%   [resultGUI] = SFUD_optimization(pln, cst, dij)
+%   [resultGUI] = matRad_SFUDoptimization(pln, cst, dij)
 %   or
-%   [resultGUI] = SFUD_optimization(pln, cst, [], ct, stf, multScen)
+%   [resultGUI] = matRad_SFUDoptimization(pln, cst, [], ct, stf, multScen)
 %
 %
 % input
@@ -130,10 +130,9 @@ else
 
     end
 
-    fprintf('Calculate total dose...');
+    fprintf('Calculate total dose...\n');
     % calculate dose
     resultGUI = matRad_calcDoseDirect(ct,stf,pln,cst,wTot,multScen);
-    fprintf('done. \n');
 end
         
 end %eof
