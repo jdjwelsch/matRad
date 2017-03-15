@@ -172,7 +172,7 @@ else
     pln.bioOptimization = 'none';
 end
 
-wInit = rand(dij.totalNumOfBixels,1);
+%wInit = rand(dij.totalNumOfBixels,1);
 %wInit = wInit .* (1 + randn(dij.totalNumOfBixels,1)/50);
 
 % set optimization options
